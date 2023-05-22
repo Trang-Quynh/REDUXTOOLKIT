@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import {addNewStudent, getOneStudent, getStudents, updateStudent} from "../redux/action";
+import {getOneStudent, updateOneStudent} from "../service/studentService";
 import {useDispatch, useSelector} from "react-redux";
 
 const SchemaError = Yup.object().shape({
@@ -16,25 +16,16 @@ export function Edit() {
     const navigate = useNavigate();
     let { id } = useParams();
     const dispatch = useDispatch()
-
-    const currentStudent = useSelector(({currentStudent})=>{
-        return currentStudent;
+    const currentStudent = useSelector(({students})=>{
+        return students.currentStudent;
     })
-
     useEffect(() => {
         dispatch(getOneStudent(id));
     }, [dispatch,id]);
-    useEffect(() => {
-        // Do something with currentStudent
-        // console.log(currentStudent)
-
-    }, [currentStudent])
-
-
 
     return (
         <>
-            {currentStudent && id === currentStudent.id && (
+            {currentStudent && id == currentStudent.id && (
                 <Formik
                     initialValues={{
                         id: currentStudent.id,
@@ -44,8 +35,7 @@ export function Edit() {
                     }}
                     validationSchema={SchemaError}
                     onSubmit={(values) => {
-                        console.log(values)
-                        dispatch(updateStudent(values)).then(() => {
+                        dispatch(updateOneStudent(values)).then(() => {
                             navigate('/home/list');
                         });
                     }}
@@ -94,6 +84,7 @@ export function Edit() {
         </>
     );
 }
+
 
 
 

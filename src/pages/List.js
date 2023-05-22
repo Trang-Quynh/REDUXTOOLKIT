@@ -4,14 +4,15 @@ import {Link, useNavigate} from "react-router-dom";
 import {Form, Formik} from "formik";
 import {logDOM} from "@testing-library/react";
 import {useDispatch, useSelector} from "react-redux";
-import {deleteStudent, getStudents} from "../redux/action";
+import {deleteStudent, getStudents} from "../service/studentService";
 
 export function List() {
     // gui request
     const dispatch = useDispatch()
     // nhan du lieu gui ve
     const students = useSelector(({students})=>{
-        return students;
+        console.log(students.list)
+        return students.list
     })
 
     const navigate = useNavigate();
@@ -38,9 +39,10 @@ export function List() {
                                 <td colSpan={2}>Action</td>
                             </tr>
                             {
-                                students.map(item => (
+                                students && students.map(item => (
                                     <tr key={item.id}>
                                         <td>{item.id}</td>
+                                        <td><img src={item.image} style={{width: 50, height: 50}} alt=""/></td>
                                         <td>{item.name}</td>
                                         <td>{item.description}</td>
                                         <td>{item.action}</td>
@@ -56,6 +58,8 @@ export function List() {
     )
 
 }
+
+// dispatch(deleteStudent(item.id))
 
 
 
