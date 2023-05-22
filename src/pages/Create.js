@@ -40,40 +40,39 @@ export function Create() {
         }
     });
 
-    const handleChange = async (event, callback) =>{
+    const handleChange = async (event) =>{
         console.log(event.target.files[0])
         setFile(event.target.files[0]);
-        callback()
     }
 //Khi biến file thay đổi thì mới thực hiện upload lên fireBase bởi vì setFile bất đồng bộ, chưa setFile hàm upload sẽ up lên undefined
-//     useEffect(() => {
-//         if (file) {
-//             handleUpload();
-//         }
-//     }, [file]);
+    useEffect(() => {
+        if (file) {
+            handleUpload();
+        }
+    }, [file]);
 
     const handleUpload = () => {
-        if (!file) {
-            alert("Please upload an image first!");
-        }
-            const storageRef = ref(storage, `/files/${file.name}`)
-            const uploadTask = uploadBytesResumable(storageRef, file);
-            uploadTask.on(
-                "state_changed",
-                (snapshot) => {
-                    const percent = Math.round(
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                    );
-                },
-                (err) => console.log(err),
-                () => {
-                    // download url
-                    getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-                        console.log(url);
-                        formik.setFieldValue('image', url);
-                    });
-                }
-            );
+        // if (!file) {
+        //     alert("Please upload an image first!");
+        // }
+        const storageRef = ref(storage, `/files/${file.name}`)
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+                const percent = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
+            },
+            (err) => console.log(err),
+            () => {
+                // download url
+                getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+                    console.log(url);
+                    formik.setFieldValue('image', url);
+                });
+            }
+        );
 
 
     };
@@ -97,7 +96,7 @@ export function Create() {
                     <option value="Tốt">Tốt</option>
                 </Field>
                 <div>
-                    <Field type="file" name={'myImage'}  onChange={(e) =>{handleChange(e, handleUpload)}} accept="/image/*" />
+                    <Field type="file" name={'myImage'}  onChange={(e) =>{handleChange(e)}} accept="/image/*" />
                     <Field type="text" name="image" />
                 </div>
 
